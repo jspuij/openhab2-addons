@@ -12,11 +12,14 @@ import static org.openhab.binding.openthermgateway.OpenThermGatewayBindingConsta
 
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.openthermgateway.internal.CommunicationProvider;
 import org.openhab.binding.openthermgateway.internal.NetworkCommunicationProvider;
 import org.openhab.binding.openthermgateway.internal.SerialCommunicationProvider;
+import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEventListener;
 import org.slf4j.Logger;
@@ -105,6 +108,25 @@ public final class OpenThermGatewayHandler extends BaseThingHandler
 
   @Override
   public void receive(final GatewayEvent gatewayEvent) {
+    // TODO: make dynamic.
+    if (gatewayEvent instanceof ConnectionStateEvent) {
+      ConnectionStateEvent connectionStateEvent = (ConnectionStateEvent) gatewayEvent;
 
+      switch (connectionStateEvent.getConnectionState()) {
+        case Connected:
+          updateStatus(ThingStatus.ONLINE);
+          break;
+        case Disconnected:
+          updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
+          break;
+        case Failed:
+          updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR);
+          break;
+        case NotConnected:
+        default:
+          break;
+
+      }
+    }
   }
 }

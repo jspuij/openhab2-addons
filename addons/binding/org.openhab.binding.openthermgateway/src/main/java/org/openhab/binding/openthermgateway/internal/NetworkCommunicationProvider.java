@@ -115,6 +115,9 @@ public final class NetworkCommunicationProvider extends AbstractCommunicationPro
         return;
       }
 
+      this.logger.debug("Connected to {}:{}", host, port);
+      enqueue(new ConnectionStateEvent(ConnectionState.Connected, ""));
+
       try {
         while (!interrupted()) {
         }
@@ -130,7 +133,7 @@ public final class NetworkCommunicationProvider extends AbstractCommunicationPro
         socket = null;
       }
 
-      this.logger.debug("Stopping Opentherm Gateway communication thread.");
+      this.logger.debug("Stopped Opentherm Gateway communication thread.");
     }
   }
 }

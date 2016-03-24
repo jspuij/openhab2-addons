@@ -197,11 +197,13 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
             gatewayEventListener.receive(event);
           }
         }
+      } catch (InterruptedException e) {
+
       } catch (Exception e) {
         this.logger.error("Exception while running Opentherm Gateway event thread", e);
       }
 
-      this.logger.debug("Stopping Opentherm Gateway event thread.");
+      this.logger.debug("Stopped Opentherm Gateway event thread.");
 
     }
   }
