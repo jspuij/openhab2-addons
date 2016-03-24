@@ -8,11 +8,20 @@
 package org.openhab.binding.openthermgateway.internal.events;
 
 /**
- * Base class for events that occur while communicating with the gateway.
+ * Interface to implement on all classes that want to
+ * receive events from the gateway.
  *
  * @author Jan-Willem Spuij
  *
  */
-public abstract class GatewayEvent {
+public interface GatewayEventListener {
+
+  /**
+   * This method gets called when the gateway sends an
+   * event.
+   *
+   * @param gatewayEvent the event from the gateway.
+   */
+  void receive(GatewayEvent gatewayEvent);
 
 }

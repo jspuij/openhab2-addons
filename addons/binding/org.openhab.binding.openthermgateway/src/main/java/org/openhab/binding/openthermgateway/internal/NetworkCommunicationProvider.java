@@ -5,6 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.openhab.binding.openthermgateway.internal;
 
 import java.io.IOException;
@@ -22,109 +23,114 @@ import org.slf4j.LoggerFactory;
  * @author Jan-Willem Spuij
  *
  */
-public class NetworkCommunicationProvider extends AbstractCommunicationProvider implements CommunicationProvider {
+public final class NetworkCommunicationProvider extends AbstractCommunicationProvider
+    implements CommunicationProvider {
+
+  /**
+   * Logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(NetworkCommunicationProvider.class);
+
+  @Override
+  public void onStart(final String port) {
+    this.logger.trace("onStart() enter");
+
+    String[] parts = port.split(":");
+
+    this.setCommunicationThread(new CommunicationThread(parts[0], Integer.parseInt(parts[1])));
+    this.getCommunicationThread().start();
+
+    this.logger.trace("onStart() exit");
+  }
+
+  @Override
+  public void onStop() {
+    this.logger.trace("onStop() enter");
+
+    if (this.getCommunicationThread() != null) {
+      this.logger.debug("Interrupting the communication thread.");
+      this.getCommunicationThread().interrupt();
+      try {
+        this.getCommunicationThread().join();
+      } catch (InterruptedException e) {
+      }
+      this.setCommunicationThread(null);
+    }
+
+    this.logger.trace("onStop() exit");
+  }
+
+  /**
+   * Thread that handles communication and posts serial messages to a queue.
+   *
+   * @author Jan-Willem Spuij
+   *
+   */
+  private class CommunicationThread extends Thread {
 
     /**
-     * Logger
+     * Logger.
      */
-    private Logger logger = LoggerFactory.getLogger(NetworkCommunicationProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(CommunicationThread.class);
 
-    @Override
-    public void start(String port) {
-        logger.trace("start() enter");
+    /**
+     * Host to connect to.
+     */
+    private final String host;
 
-        String[] parts = port.split(":");
+    /**
+     * Port to connect to.
+     */
+    private final int port;
 
-        this.communicationThread = new CommunicationThread(parts[0], Integer.parseInt(parts[1]));
-        this.communicationThread.start();
-
-        logger.trace("start() exit");
-    }
-
-    @Override
-    public void stop() {
-        logger.trace("stop() enter");
-
-        if (this.communicationThread != null) {
-            logger.debug("Interrupting the communication thread.");
-            this.communicationThread.interrupt();
-            try {
-                this.communicationThread.join();
-            } catch (InterruptedException e) {
-            }
-            this.communicationThread = null;
-        }
-
-        logger.trace("stop() exit");
+    /**
+     * Initializes a new instance of the {@link CommunicationThread} class.
+     *
+     * @param host The host to connect to.
+     * @param port The port to connect to.
+     */
+    CommunicationThread(final String host, final int port) {
+      this.host = host;
+      this.port = port;
     }
 
     /**
-     * Thread that handles communication and posts serial messages to a queue.
-     *
-     * @author Jan-Willem Spuij
-     *
+     * Runs the communication loop.
      */
-    private class CommunicationThread extends Thread {
+    @Override
+    public void run() {
+      this.logger.debug("Starting Opentherm Gateway communication thread");
 
-        /**
-         * Host to connect to.
-         */
-        private String host;
+      Socket socket = null;
 
-        /**
-         * Port to connect to.
-         */
-        private int port;
+      try {
+        socket = new Socket(host, port);
+      } catch (UnknownHostException e1) {
+        this.logger.error("Unknown host: {}", host);
+        enqueue(new ConnectionStateEvent(ConnectionState.Failed, e1.getLocalizedMessage()));
+        return;
+      } catch (IOException e1) {
+        this.logger.error("IOException received: {}", e1.getLocalizedMessage());
+        enqueue(new ConnectionStateEvent(ConnectionState.Failed, e1.getLocalizedMessage()));
+        return;
+      }
 
-        /**
-         * Initializes a new instance of the {@link CommunicationThread} class.
-         *
-         * @param host The host to connect to.
-         * @param port The port to connect to.
-         */
-        public CommunicationThread(String host, int port) {
-            this.host = host;
-            this.port = port;
+      try {
+        while (!interrupted()) {
         }
+      } catch (Exception e) {
+        this.logger.error("Exception while running Opentherm Gateway communication thread", e);
+      }
 
-        /**
-         * Runs the communication loop.
-         */
-        @Override
-        public void run() {
-            logger.debug("Starting Opentherm Gateway communication thread");
-
-            Socket socket = null;
-
-            try {
-                socket = new Socket(host, port);
-            } catch (UnknownHostException e1) {
-                logger.error("Unknown host: {}", host);
-                Enqueue(new ConnectionStateEvent(ConnectionState.Failed, e1.getLocalizedMessage()));
-                return;
-            } catch (IOException e1) {
-                logger.error("IOException received: {}", e1.getLocalizedMessage());
-                Enqueue(new ConnectionStateEvent(ConnectionState.Failed, e1.getLocalizedMessage()));
-                return;
-            }
-
-            try {
-                while (!interrupted()) {
-                }
-            } catch (Exception e) {
-                logger.error("Exception while running Opentherm Gateway communication thread", e);
-            }
-
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                }
-                socket = null;
-            }
-
-            logger.debug("Stopping Opentherm Gateway communication thread.");
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch (IOException e) {
         }
+        socket = null;
+      }
+
+      this.logger.debug("Stopping Opentherm Gateway communication thread.");
     }
-
+  }
 }

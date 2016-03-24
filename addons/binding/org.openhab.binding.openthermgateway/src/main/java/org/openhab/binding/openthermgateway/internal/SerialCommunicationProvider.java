@@ -5,6 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.openhab.binding.openthermgateway.internal;
 
 /**
@@ -13,18 +14,19 @@ package org.openhab.binding.openthermgateway.internal;
  * @author Jan-Willem Spuij
  *
  */
-public class SerialCommunicationProvider extends AbstractCommunicationProvider implements CommunicationProvider {
+public class SerialCommunicationProvider extends AbstractCommunicationProvider
+    implements CommunicationProvider {
 
-    @Override
-    public void start(String port) {
-        // TODO Auto-generated method stub
+  @Override
+  public void onStart(final String port) {
+    // TODO Auto-generated method stub
 
-    }
+  }
 
-    @Override
-    public void stop() {
-        // TODO Auto-generated method stub
+  @Override
+  public void onStop() {
+    // TODO Auto-generated method stub
 
-    }
+  }
 
 }

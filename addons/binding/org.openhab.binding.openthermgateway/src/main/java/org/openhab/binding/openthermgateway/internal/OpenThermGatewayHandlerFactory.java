@@ -24,30 +24,34 @@ import org.openhab.binding.openthermgateway.handler.OpenThermGatewayHandler;
  *
  * @author Jan-Willem Spuij - Initial contribution
  */
-public class OpenThermGatewayHandlerFactory extends BaseThingHandlerFactory {
+public final class OpenThermGatewayHandlerFactory extends BaseThingHandlerFactory {
 
-    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_GATEWAY);
+  /**
+   * Supported thing types.
+   */
+  private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections
+      .singleton(THING_TYPE_GATEWAY);
 
-    @Override
-    public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+  @Override
+  public boolean supportsThingType(final ThingTypeUID thingTypeUID) {
+    return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+  }
+
+  /**
+   * Creates a handler for the specified thing.
+   *
+   * @param thing a thing.
+   * @return a thing handler for the thing.
+   */
+  @Override
+  protected ThingHandler createHandler(final Thing thing) {
+
+    ThingTypeUID thingTypeUID = thing.getThingTypeUID();
+
+    if (thingTypeUID.equals(THING_TYPE_GATEWAY)) {
+      return new OpenThermGatewayHandler(thing);
     }
 
-    /**
-     * Creates a handler for the specified thing.
-     *
-     * @param thing a thing.
-     * @return a thing handler for the thing.
-     */
-    @Override
-    protected ThingHandler createHandler(Thing thing) {
-
-        ThingTypeUID thingTypeUID = thing.getThingTypeUID();
-
-        if (thingTypeUID.equals(THING_TYPE_GATEWAY)) {
-            return new OpenThermGatewayHandler(thing);
-        }
-
-        return null;
-    }
+    return null;
+  }
 }
