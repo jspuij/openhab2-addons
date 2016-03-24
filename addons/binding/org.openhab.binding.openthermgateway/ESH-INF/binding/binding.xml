@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
 
     <name>OpenThermGateway Binding</name>
-    <description>This is the binding for OpenThermGateway.</description>
+    <description>This is the binding for the OpenTherm Gateway. More information on the device at http://otgw.tclcode.com/.</description>
     <author>Jan-Willem Spuij</author>
 
 </binding:binding>

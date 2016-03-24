@@ -4,21 +4,31 @@
         xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <!-- Sample Thing Type -->
-    <thing-type id="sample">
-        <label>OpenThermGateway Binding Thing</label>
-        <description>Sample thing for OpenThermGateway Binding</description>
-
+    <thing-type id="gateway">
+        <label>Opentherm Gateway</label>
+        <description>Device for monitoring and controlling Opentherm compatible boilers and thermostats.</description>
         <channels>
-            <channel id="channel1" typeId="sample-channel"/>
+            <channel id="channelGatewayVersion" typeId="gateway-version"/>
         </channels>
+
+        <config-description>
+		  <parameter name="port" type="text" required="true">
+		    <label>Port</label>
+		    <description>The serial or network port the opentherm gateway is connected to.
+		      In case of a serial port, the value should either be a port name like 'COM1' (Windows) or a device
+              file like '/dev/ttyS0' (Unix). When using the serial to network converter, the format should be
+              something like '192.168.1.100:1001' where the first part is the IP-address or host name to connect to
+              and the second part is the port number.		     
+		    </description>
+		  </parameter>
+        </config-description>
     </thing-type>
 
-    <!-- Sample Channel Type -->
-    <channel-type id="sample-channel">
-        <item-type>openthermgatewayItem</item-type>
-        <label>OpenThermGateway Binding Channel</label>
-        <description>Sample channel for OpenThermGateway Binding</description>
+    <channel-type id="gateway-version">
+        <item-type>String</item-type>
+        <label>Opentherm Gateway Version</label>
+        <description>Version information of the Opentherm Gateway Firmware</description>
+        <state readOnly="true"></state>
     </channel-type>
 
 </thing:thing-descriptions>
