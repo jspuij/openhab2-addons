@@ -118,9 +118,11 @@ public final class OpenThermGatewayHandler extends BaseThingHandler
           break;
         case Disconnected:
           updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
+          this.communicationProvider.stop();
           break;
         case Failed:
           updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.CONFIGURATION_ERROR);
+          this.communicationProvider.stop();
           break;
         case NotConnected:
         default:

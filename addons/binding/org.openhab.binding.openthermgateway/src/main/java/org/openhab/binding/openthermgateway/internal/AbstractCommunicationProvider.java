@@ -8,11 +8,18 @@
 
 package org.openhab.binding.openthermgateway.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
+import org.openhab.binding.openthermgateway.internal.communication.EventThread;
+import org.openhab.binding.openthermgateway.internal.communication.ReceiveThread;
+import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent;
+import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent.ConnectionState;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEventListener;
 import org.slf4j.Logger;
@@ -42,14 +49,24 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
   private static final int INITIAL_RX_QUEUE_SIZE = 8;
 
   /**
-   * Timeout in milliseconds before waking up the receive thread.
+   * Thread for handling reading from a stream.
    */
-  private static final int RECEIVE_TIMEOUT = 5000;
+  private Thread readThread;
 
   /**
-   * Thread for handling communication.
+   * Thread for handling writing to a stream.
    */
-  private Thread communicationThread;
+  private Thread sendThread;
+
+  /**
+   * read stream.
+   */
+  private InputStream inputStream;
+
+  /**
+   * write stream.
+   */
+  private OutputStream outputStream;
 
   /**
    * Thread for sending events.
@@ -57,13 +74,13 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
   private Thread eventThread;
 
   /**
-   * Queue for sending protocol messages.
+   * Queue for sending protocol messages to the gateway.
    */
   private final LinkedBlockingQueue<GatewayEvent> sendQueue = new LinkedBlockingQueue<GatewayEvent>(
       INITIAL_TX_QUEUE_SIZE);
 
   /**
-   * Queue for receiving protocol messages.
+   * Queue for receiving protocol messages from the gateway.
    */
   private final LinkedBlockingQueue<GatewayEvent> recvQueue = new LinkedBlockingQueue<GatewayEvent>(
       INITIAL_RX_QUEUE_SIZE);
@@ -82,20 +99,36 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
   public final void start(final String port) {
     this.logger.trace("start() enter");
 
-    this.eventThread = new EventThread();
+    this.eventThread = new EventThread(this.recvQueue, this.eventListeners);
     this.eventThread.start();
 
-    this.onStart(port);
+    try {
+      this.onStart(port);
+    } catch (IOException e) {
+      this.logger.error("An error occurred while trying to start the connection to the gateway.",
+          e);
+      this.recvQueue.add(new ConnectionStateEvent(ConnectionState.Failed, e.getLocalizedMessage()));
+      return;
+    }
+
+    this.readThread = new ReceiveThread(this.inputStream, this.recvQueue);
+    this.readThread.start();
+
+    this.recvQueue.add(new ConnectionStateEvent(ConnectionState.Connected, ""));
 
     this.logger.trace("start() exit");
   }
 
   /**
    * Method to be implemented by derived classes on startup.
+   * The derived method should set the input and output streams
+   * using the setInputStream and setOutputStream methods.
    *
    * @param port the port to connect to.
+   * @throws UnknownHostException the host is not known.
+   * @throws IOException there was some sort of IO error.
    */
-  public abstract void onStart(final String port);
+  public abstract void onStart(final String port) throws UnknownHostException, IOException;
 
   /**
    * Stops communication with the gateway.
@@ -104,15 +137,21 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
   public final void stop() {
     this.logger.trace("stop() enter");
 
-    this.onStop();
+    // onStop has to close the socket. This is the only
+    // way to stop the read thread.
+
+    try {
+      this.onStop();
+    } catch (IOException e) {
+    }
+
+    if (this.readThread != null) {
+      this.readThread = null;
+    }
 
     if (this.eventThread != null) {
       this.logger.debug("Interrupting the event thread.");
       this.eventThread.interrupt();
-      try {
-        this.eventThread.join();
-      } catch (InterruptedException e) {
-      }
       this.eventThread = null;
     }
 
@@ -121,18 +160,10 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
 
   /**
    * Method to be implemented by derived classes on shutdown.
-   */
-  public abstract void onStop();
-
-  /**
-   * Enqueues an event for handling on another thread.
    *
-   * @param gatewayEvent the event to enqueue.
+   * @throws IOException there was some sort of IO error.
    */
-  protected final void enqueue(final GatewayEvent gatewayEvent) {
-    this.logger.debug("Enqueuing event for handling: {}", gatewayEvent.toString());
-    this.sendQueue.add(gatewayEvent);
-  }
+  public abstract void onStop() throws IOException;
 
   /**
    * Adds a {@link GatewayEventListener} to the communication provider.
@@ -155,56 +186,21 @@ public abstract class AbstractCommunicationProvider implements CommunicationProv
   }
 
   /**
-   * @return the communicationThread
+   * Sets the output stream.
+   *
+   * @param outputStream the outputStream to set
    */
-  protected final Thread getCommunicationThread() {
-    return communicationThread;
+  protected final void setOutputStream(final OutputStream outputStream) {
+    this.outputStream = outputStream;
   }
 
   /**
-   * @param communicationThread the communicationThread to set
+   * Sets the input stream.
+   *
+   * @param inputStream the {@link InputStream} to set
    */
-  protected final void setCommunicationThread(final Thread communicationThread) {
-    this.communicationThread = communicationThread;
+  protected final void setInputStream(final InputStream inputStream) {
+    this.inputStream = inputStream;
   }
 
-  /**
-   * Thread that handles event posting.
-   *
-   * @author Jan-Willem Spuij
-   *
-   */
-  private class EventThread extends Thread {
-
-    /**
-     * Logger.
-     */
-    private final Logger logger = LoggerFactory.getLogger(EventThread.class);
-
-    @Override
-    public void run() {
-      this.logger.debug("Starting Opentherm Gateway event thread");
-
-      try {
-        while (!interrupted()) {
-          GatewayEvent event = sendQueue.poll(RECEIVE_TIMEOUT, TimeUnit.MILLISECONDS);
-
-          if (event == null) {
-            continue;
-          }
-
-          for (GatewayEventListener gatewayEventListener : eventListeners) {
-            gatewayEventListener.receive(event);
-          }
-        }
-      } catch (InterruptedException e) {
-
-      } catch (Exception e) {
-        this.logger.error("Exception while running Opentherm Gateway event thread", e);
-      }
-
-      this.logger.debug("Stopped Opentherm Gateway event thread.");
-
-    }
-  }
 }
