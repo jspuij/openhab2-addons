@@ -17,6 +17,7 @@ import java.util.concurrent.BlockingQueue;
 import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent;
 import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent.ConnectionState;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEvent;
+import org.openhab.binding.openthermgateway.internal.events.MessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,7 @@ public final class ReceiveThread extends Thread {
       while (!interrupted()) {
         String data = reader.readLine();
         logger.debug("Got data: {}", data);
+        this.queue.add(new MessageEvent(data));
       }
     } catch (IOException e) {
       this.logger.debug("Disconnected while running Opentherm Gateway read thread",
