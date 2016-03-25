@@ -89,6 +89,8 @@ public abstract class OpenthermFrame {
       return null;
     }
 
+    return null;
+
   }
 
   /**
