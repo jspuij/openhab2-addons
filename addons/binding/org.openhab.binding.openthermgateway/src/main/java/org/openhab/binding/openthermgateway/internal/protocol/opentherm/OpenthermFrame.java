@@ -8,9 +8,6 @@
 
 package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
@@ -30,12 +27,6 @@ public abstract class OpenthermFrame {
    */
   private static final int FRAME_LENGTH = 4;
 
-  /***
-   * Map with frame classes to look up and
-   * instantiate in the parser.
-   */
-  private static final Map<DataId, OpenthermFrame> FRAME_CLASSES = new HashMap<DataId, OpenthermFrame>();
-
   /**
    * The direction in which the frame is flowing.
    */
@@ -47,14 +38,31 @@ public abstract class OpenthermFrame {
   private final MessageType messageType;
 
   /**
+   * The data id of the frame.
+   */
+  private final DataId dataId;
+
+  /**
    * Initializes a new instance of the {@link OpenthermFrame} class.
    *
-   * @param direction The {@link Direction} in which the frame is flowing.
-   * @param messageType The {@link MessageType} of the frame.
+   * @param direction The {@link Direction} the message flows into.
+   * @param frameData The frame data.
+   * @throws IllegalArgumentException if the frame data is invalid.
    */
-  public OpenthermFrame(final Direction direction, final MessageType messageType) {
+  public OpenthermFrame(final Direction direction, final byte[] frameData)
+      throws IllegalArgumentException {
     this.direction = direction;
-    this.messageType = messageType;
+
+    this.messageType = MessageType.getMessageType((frameData[0] >> 1));
+    if (this.messageType == null) {
+      throw new IllegalArgumentException(
+          String.format("Incorrect message type: %d", (frameData[0] >> 1)));
+    }
+
+    this.dataId = DataId.getDataId(frameData[1]);
+    if (this.dataId == null) {
+      throw new IllegalArgumentException(String.format("Unknown dataId: %d", (frameData[1])));
+    }
   }
 
   /**
@@ -83,17 +91,14 @@ public abstract class OpenthermFrame {
     }
 
     byte[] frameData = DatatypeConverter.parseHexBinary(frame.substring(1, 2 * FRAME_LENGTH + 1));
-    MessageType messageType = MessageType.getMessageType((frameData[0] >> 1));
-    if (messageType == null) {
-      logger.debug("Incorrect message type: {}", (frameData[0] >> 1));
-      return null;
-    }
 
     return null;
 
   }
 
   /**
+   * Returns the {@link Direction} the frame is flowing into.
+   *
    * @return the {@link Direction}
    */
   public final Direction getDirection() {
@@ -101,6 +106,8 @@ public abstract class OpenthermFrame {
   }
 
   /**
+   * Returns the {@link MessageType} of the frame.
+   *
    * @return the {@link MessageType}
    */
   public final MessageType getMessageType() {
@@ -108,8 +115,12 @@ public abstract class OpenthermFrame {
   }
 
   /**
+   * Returns the {@link DataId} of the frame.
+   *
    * @return the {@link DataId}
    */
-  public abstract DataId getDataId();
+  public final DataId getDataId() {
+    return this.dataId;
+  }
 
 }
