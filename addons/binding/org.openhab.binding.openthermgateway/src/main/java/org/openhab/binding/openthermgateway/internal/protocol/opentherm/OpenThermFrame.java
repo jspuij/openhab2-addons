@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author Jan-Willem Spuij
  *
  */
-public abstract class OpenthermFrame {
+public abstract class OpenThermFrame {
 
   /**
    * Opentherm Frame_Length in bytes.
@@ -52,7 +52,7 @@ public abstract class OpenthermFrame {
    * @param frameData The frame data.
    * @throws IllegalArgumentException if the frame data is invalid.
    */
-  public OpenthermFrame(final Direction direction, final DataId dataId, final byte[] frameData)
+  public OpenThermFrame(final Direction direction, final DataId dataId, final byte[] frameData)
       throws IllegalArgumentException {
     this.direction = direction;
     this.dataId = dataId;
@@ -72,8 +72,8 @@ public abstract class OpenthermFrame {
    * @param frame {@link String} containing the message.
    * @return an {@link OpenthermFrame} instance.
    */
-  public static OpenthermFrame parseString(final String frame) {
-    Logger logger = LoggerFactory.getLogger(OpenthermFrame.class);
+  public static OpenThermFrame parseString(final String frame) {
+    Logger logger = LoggerFactory.getLogger(OpenThermFrame.class);
 
     if (frame == null) {
       return null;
@@ -98,7 +98,7 @@ public abstract class OpenthermFrame {
     }
 
     try {
-      Constructor<? extends OpenthermFrame> constructor = dataId.getFrameClass()
+      Constructor<? extends OpenThermFrame> constructor = dataId.getFrameClass()
           .getConstructor(Direction.class, DataId.class, byte[].class);
 
       return constructor.newInstance(direction, dataId, frameData);

@@ -55,7 +55,8 @@ public enum DataId {
   /**
    * Remote boiler parameter transfer-enable & read/write flags.
    */
-  RBP_FLAGS(6, "Remote boiler parameter transfer-enable & read/write flags", RbpFrame.class),
+  RBP_FLAGS(6, "Remote boiler parameter transfer-enable & read/write flags",
+      RemoteBoilerParameter.class),
 
   /**
    * Cooling control signal (%).
@@ -131,7 +132,7 @@ public enum DataId {
   /**
    * Day of Week and Time of Day.
    */
-  DAY_TIME(20, "Day of Week and Time of Day", DayTimeFrame.class),
+  DAY_TIME(20, "Day of Week and Time of Day", DayOfWeekAndTimeOfDayFrame.class),
 
   /**
    * Calendar date.
@@ -235,7 +236,7 @@ public enum DataId {
    * Function of manual and program changes in master and remote.
    */
   REMOTE_OVERRIDE_FUNCTION(100, "Function of manual and program changes in master and remote",
-      RemoteOverideFrame.class),
+      RemoteOverrideFrame.class),
 
   /**
    * OEM-specific diagnostic/service code.
@@ -327,7 +328,7 @@ public enum DataId {
   /**
    * {@link OpenthermFrame} class that should be instantiated for this {@link DataId}.
    */
-  private final Class<? extends OpenthermFrame> frameClass;
+  private final Class<? extends OpenThermFrame> frameClass;
 
   /**
    * Initializes a new instance of the enumeration.
@@ -338,7 +339,7 @@ public enum DataId {
    *          {@link DataId}.
    */
   DataId(final int key, final String description,
-      final Class<? extends OpenthermFrame> frameClass) {
+      final Class<? extends OpenThermFrame> frameClass) {
     this.key = key;
     this.description = description;
     this.frameClass = frameClass;
@@ -385,7 +386,7 @@ public enum DataId {
   /**
    * @return the frame class.
    */
-  public Class<? extends OpenthermFrame> getFrameClass() {
+  public Class<? extends OpenThermFrame> getFrameClass() {
     return frameClass;
   }
 }

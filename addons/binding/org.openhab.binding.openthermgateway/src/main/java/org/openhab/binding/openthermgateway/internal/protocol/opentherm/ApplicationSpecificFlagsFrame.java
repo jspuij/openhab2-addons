@@ -15,7 +15,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public final class ApplicationSpecificFlagsFrame extends OpenthermFrame {
+public final class ApplicationSpecificFlagsFrame extends OpenThermFrame {
 
   /**
    * Service required.

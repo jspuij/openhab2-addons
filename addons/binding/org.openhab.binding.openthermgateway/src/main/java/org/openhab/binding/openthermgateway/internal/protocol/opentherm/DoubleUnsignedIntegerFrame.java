@@ -14,7 +14,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public final class DoubleUnsignedIntegerFrame extends OpenthermFrame {
+public final class DoubleUnsignedIntegerFrame extends OpenThermFrame {
 
   /**
    * The first value of this frame.

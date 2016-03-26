@@ -15,7 +15,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public final class StatusFrame extends OpenthermFrame {
+public final class StatusFrame extends OpenThermFrame {
   /**
    * Central Heating enabled.
    */

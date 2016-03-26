@@ -14,7 +14,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public final class MasterInfoFrame extends OpenthermFrame {
+public final class MasterInfoFrame extends OpenThermFrame {
 
   /**
    * MemberId of the master.

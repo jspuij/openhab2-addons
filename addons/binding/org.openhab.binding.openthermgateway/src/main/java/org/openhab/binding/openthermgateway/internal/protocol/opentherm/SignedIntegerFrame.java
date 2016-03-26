@@ -17,7 +17,7 @@ import java.nio.ByteOrder;
  * @author Jan-Willem Spuij
  *
  */
-public final class SignedIntegerFrame extends OpenthermFrame {
+public final class SignedIntegerFrame extends OpenThermFrame {
 
   /**
    * The value of this frame.

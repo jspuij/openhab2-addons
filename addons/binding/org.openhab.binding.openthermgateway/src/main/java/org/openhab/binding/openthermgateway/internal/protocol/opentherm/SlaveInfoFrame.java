@@ -14,7 +14,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public final class SlaveInfoFrame extends OpenthermFrame {
+public final class SlaveInfoFrame extends OpenThermFrame {
 
   /**
    * Indicates whether Domestic Hot Water is present on the boiler.

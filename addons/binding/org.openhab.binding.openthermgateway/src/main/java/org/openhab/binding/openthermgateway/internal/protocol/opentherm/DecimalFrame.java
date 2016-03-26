@@ -18,7 +18,7 @@ import java.nio.ByteOrder;
  * @author Jan-Willem Spuij
  *
  */
-public final class DecimalFrame extends OpenthermFrame {
+public final class DecimalFrame extends OpenThermFrame {
 
   /**
    * Divisor for a decimal value.
