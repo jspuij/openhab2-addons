@@ -14,7 +14,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public class DoubleUnsignedIntegerFrame extends OpenthermFrame {
+public final class DoubleUnsignedIntegerFrame extends OpenthermFrame {
 
   /**
    * The first value of this frame.
@@ -46,7 +46,7 @@ public class DoubleUnsignedIntegerFrame extends OpenthermFrame {
    *
    * @return the value The value
    */
-  public final int getFirstValue() {
+  public int getFirstValue() {
     return firstValue;
   }
 
@@ -55,7 +55,7 @@ public class DoubleUnsignedIntegerFrame extends OpenthermFrame {
    *
    * @return the value The value
    */
-  public final int getSecondValue() {
+  public int getSecondValue() {
     return secondValue;
   }
 }

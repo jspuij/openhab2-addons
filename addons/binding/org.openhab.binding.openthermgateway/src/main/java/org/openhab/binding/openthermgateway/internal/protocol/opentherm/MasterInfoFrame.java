@@ -8,43 +8,36 @@
 
 package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 /**
- * Frame carrying a signed 16bit value.
+ * Opentherm Master information Frame.
  *
  * @author Jan-Willem Spuij
  *
  */
-public final class UnsignedIntegerFrame extends OpenthermFrame {
+public final class MasterInfoFrame extends OpenthermFrame {
 
   /**
-   * The value of this frame.
+   * MemberId of the master.
    */
-  private final int value;
+  private final int masterMemberId;
 
   /**
-   * Creates a new instance of the {@link UnsignedIntegerFrame} class.
+   * Creates a new instance of the {@link MasterInfoFrame} class.
    *
    * @param direction The {@link Direction} the message flows into.
    * @param dataId The {@link DataId} of the frame.
    * @param frameData The frame data.
    * @throws IllegalArgumentException if the frame data is invalid.
    */
-  public UnsignedIntegerFrame(final Direction direction, final DataId dataId,
-      final byte[] frameData) {
+  public MasterInfoFrame(final Direction direction, final DataId dataId, final byte[] frameData) {
     super(direction, dataId, frameData);
-    value = ByteBuffer.wrap(frameData, 2, 2).order(ByteOrder.BIG_ENDIAN).getShort() & 0xFFFF;
+    this.masterMemberId = frameData[3] & 0xFF;
   }
 
   /**
-   * The value contained in this {@link UnsignedIntegerFrame}.
-   *
-   * @return the value The value
+   * @return the Member ID of the thermostat.
    */
-  public int getValue() {
-    return value;
+  public int getMasterMemberId() {
+    return masterMemberId;
   }
-
 }

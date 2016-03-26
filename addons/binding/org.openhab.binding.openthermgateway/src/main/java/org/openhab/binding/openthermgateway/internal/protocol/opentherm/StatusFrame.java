@@ -15,7 +15,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
  * @author Jan-Willem Spuij
  *
  */
-public class StatusFrame extends OpenthermFrame {
+public final class StatusFrame extends OpenthermFrame {
   /**
    * Central Heating enabled.
    */
@@ -103,84 +103,84 @@ public class StatusFrame extends OpenthermFrame {
   /**
    * @return whether central heating is enabled on the thermostat.
    */
-  public final boolean isMasterChEnable() {
+  public boolean isMasterChEnable() {
     return masterChEnable;
   }
 
   /**
    * @return whether domestic hot water is enabled on the thermostat.
    */
-  public final boolean isMasterDhwEnable() {
+  public boolean isMasterDhwEnable() {
     return masterDhwEnable;
   }
 
   /**
    * @return whether cooling is enabled on the thermostat.
    */
-  public final boolean isMasterCoolingEnable() {
+  public boolean isMasterCoolingEnable() {
     return masterCoolingEnable;
   }
 
   /**
    * @return whether outside temperature is enabled on the thermostat.
    */
-  public final boolean isMasterOtcActive() {
+  public boolean isMasterOtcActive() {
     return masterOtcActive;
   }
 
   /**
    * @return whether central heating on the second circuit is enabled on the thermostat.
    */
-  public final boolean isMasterCh2Enable() {
+  public boolean isMasterCh2Enable() {
     return masterCh2Enable;
   }
 
   /**
    * @return whether the boiler has a fault.
    */
-  public final boolean isSlaveFaultIndication() {
+  public boolean isSlaveFaultIndication() {
     return slaveFaultIndication;
   }
 
   /**
    * @return whether central heating on the boiler is active.
    */
-  public final boolean isSlaveChActive() {
+  public boolean isSlaveChActive() {
     return slaveChActive;
   }
 
   /**
    * @return whether domestic hot water is active on the boiler.
    */
-  public final boolean isSlaveDhwActive() {
+  public boolean isSlaveDhwActive() {
     return slaveDhwActive;
   }
 
   /**
    * @return whether the flame is burning in the boiler.
    */
-  public final boolean isSlaveFlameActive() {
+  public boolean isSlaveFlameActive() {
     return slaveFlameActive;
   }
 
   /**
    * @return whether cooling is active in the boiler.
    */
-  public final boolean isSlaveCoolingActive() {
+  public boolean isSlaveCoolingActive() {
     return slaveCoolingActive;
   }
 
   /**
    * @return whether the central heating on the second circuit is enabled on the boiler.
    */
-  public final boolean isSlaveCh2Active() {
+  public boolean isSlaveCh2Active() {
     return slaveCh2Active;
   }
 
   /**
    * @return whether there is a diagnostic indication on the boiler.
    */
-  public final boolean isSlaveDiagnosticIndication() {
+  public boolean isSlaveDiagnosticIndication() {
     return slaveDiagnosticIndication;
   }
 

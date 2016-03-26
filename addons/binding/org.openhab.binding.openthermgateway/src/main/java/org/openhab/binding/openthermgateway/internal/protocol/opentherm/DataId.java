@@ -50,7 +50,7 @@ public enum DataId {
    * Application-specific fault flags and OEM fault code.
    */
   ASF_FLAGS_OEM_FAULT_CODE(5, "Application-specific fault flags and OEM fault code",
-      AsfFrame.class),
+      ApplicationSpecificFlagsFrame.class),
 
   /**
    * Remote boiler parameter transfer-enable & read/write flags.
