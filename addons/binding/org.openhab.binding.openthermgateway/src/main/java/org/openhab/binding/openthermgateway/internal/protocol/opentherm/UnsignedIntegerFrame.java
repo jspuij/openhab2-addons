@@ -47,4 +47,11 @@ public final class UnsignedIntegerFrame extends OpenThermFrame {
     return value;
   }
 
+  @Override
+  public String toString() {
+    return String.format("Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), Value: %d",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.getValue());
+  }
 }

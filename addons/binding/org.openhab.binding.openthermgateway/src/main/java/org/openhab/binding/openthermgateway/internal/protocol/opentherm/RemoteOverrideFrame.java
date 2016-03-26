@@ -60,4 +60,15 @@ public final class RemoteOverrideFrame extends OpenThermFrame {
     return programChangePriority;
   }
 
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), "
+            + "Manual change has priority over remote set point: %b, "
+            + "Programmed change has priority over remote set point: %b",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.isManualChangePriority(),
+        this.isProgramChangePriority());
+  }
 }

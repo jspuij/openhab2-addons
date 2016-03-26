@@ -22,6 +22,8 @@ import org.openhab.binding.openthermgateway.internal.SerialCommunicationProvider
 import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEventListener;
+import org.openhab.binding.openthermgateway.internal.events.MessageEvent;
+import org.openhab.binding.openthermgateway.internal.protocol.opentherm.OpenThermFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,6 +113,7 @@ public final class OpenThermGatewayHandler extends BaseThingHandler
     // TODO: make dynamic.
     if (gatewayEvent instanceof ConnectionStateEvent) {
       ConnectionStateEvent connectionStateEvent = (ConnectionStateEvent) gatewayEvent;
+      logger.debug("Received ConnectionStateEvent: {}", connectionStateEvent);
 
       switch (connectionStateEvent.getConnectionState()) {
         case Connected:
@@ -128,6 +131,16 @@ public final class OpenThermGatewayHandler extends BaseThingHandler
         default:
           break;
 
+      }
+    } else if (gatewayEvent instanceof MessageEvent) {
+      MessageEvent messageEvent = (MessageEvent) gatewayEvent;
+      logger.debug("Received MessageEvent: {}", messageEvent);
+
+      // maybe the message is an opentherm frame.
+      OpenThermFrame frame = OpenThermFrame.parseString(messageEvent.getMessage());
+
+      if (frame != null) {
+        logger.debug("Message is a frame: {}", frame.toString());
       }
     }
   }

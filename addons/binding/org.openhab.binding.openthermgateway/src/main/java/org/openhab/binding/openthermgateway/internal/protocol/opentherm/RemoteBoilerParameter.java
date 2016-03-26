@@ -90,4 +90,18 @@ public final class RemoteBoilerParameter extends OpenThermFrame {
     return maxSetPointChReadWrite;
   }
 
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), "
+            + "Domestic Hot Water set point transfer enabled: %b, "
+            + "Central heating set point transfer enabled: %b, "
+            + "Domestic Hot Water set point read/write: %b, "
+            + "Central Heating set point read/write: %b",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(),
+        this.isDhwSetPointTransferEnable(), this.isMaxChSetPointTransferEnable(),
+        this.isDhwSetPointReadWrite(), this.isMaxSetPointChReadWrite());
+  }
 }

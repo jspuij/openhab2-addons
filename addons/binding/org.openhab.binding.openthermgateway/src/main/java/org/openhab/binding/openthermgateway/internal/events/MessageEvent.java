@@ -14,7 +14,7 @@ package org.openhab.binding.openthermgateway.internal.events;
  * @author Jan-Willem Spuij
  *
  */
-public class MessageEvent extends GatewayEvent {
+public final class MessageEvent extends GatewayEvent {
 
   /**
    * The message received by the gateway.
@@ -36,8 +36,12 @@ public class MessageEvent extends GatewayEvent {
    *
    * @return the message.
    */
-  public final String getMessage() {
+  public String getMessage() {
     return message;
   }
 
+  @Override
+  public String toString() {
+    return getMessage();
+  }
 }

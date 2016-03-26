@@ -121,4 +121,17 @@ public final class ApplicationSpecificFlagsFrame extends OpenThermFrame {
   public boolean isWaterOverTempFault() {
     return waterOverTempFault;
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), Service required: %b, "
+            + "Remote reset enabled: %b, Low water presssure fault: %b, Gas / Flame fault: %b "
+            + "Air pressure fault: %b, Water over temperature fault: %b, Oem fault code: %d",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.isServiceRequest(),
+        this.isLockoutReset(), this.isLowWaterPressureFault(), this.isGasFlameFault(),
+        this.isAirPressureFault(), this.isWaterOverTempFault(), this.getOemFaultCode());
+  }
 }

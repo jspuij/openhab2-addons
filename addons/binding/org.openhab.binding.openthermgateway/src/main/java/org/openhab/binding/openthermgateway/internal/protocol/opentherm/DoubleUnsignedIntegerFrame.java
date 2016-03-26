@@ -58,4 +58,14 @@ public final class DoubleUnsignedIntegerFrame extends OpenThermFrame {
   public int getSecondValue() {
     return secondValue;
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), First value: %d, Second value: %d",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.getFirstValue(),
+        this.getSecondValue());
+  }
 }

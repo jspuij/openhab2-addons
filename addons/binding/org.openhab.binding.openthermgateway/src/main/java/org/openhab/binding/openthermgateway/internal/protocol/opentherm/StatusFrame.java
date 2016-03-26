@@ -184,4 +184,20 @@ public final class StatusFrame extends OpenThermFrame {
     return slaveDiagnosticIndication;
   }
 
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), Master Central Heating enabled: %b, "
+            + "Master Domestic Hot water enabled: %b, Master Cooling enabled: %b, "
+            + "Master Outside temperature compensation enabled: %b, Master Central heating second circuit enabled %b, "
+            + "Slave has fault: %b, Slave Central heating active: %b, Slave Domestic hot water active: %b"
+            + "Slave Flame active: %b, Slave Cooling active: %b, Slave Central heating second circuit active: %b",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.isMasterChEnable(),
+        this.isMasterDhwEnable(), this.isMasterCoolingEnable(), this.isMasterOtcActive(),
+        this.isMasterCh2Enable(), this.isSlaveFaultIndication(), this.isSlaveChActive(),
+        this.isSlaveDhwActive(), this.isSlaveFlameActive(), this.isSlaveCoolingActive(),
+        this.isSlaveCh2Active());
+  }
 }

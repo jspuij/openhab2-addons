@@ -87,7 +87,7 @@ public final class SlaveInfoFrame extends OpenThermFrame {
   }
 
   /**
-   * @return Indicates whether the boiler supports moduling control.
+   * @return Indicates whether the boiler supports modulating control.
    */
   public boolean isSlaveControlType() {
     return slaveControlType;
@@ -121,4 +121,19 @@ public final class SlaveInfoFrame extends OpenThermFrame {
   public boolean isSlaveCh2Present() {
     return slaveCh2Present;
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), Slave member Id: %d, "
+            + "Domestic Hot Water present: %b, Modulating: %b, Cooling supported: %b, "
+            + "Domestic Hot Water in storage tank: %b, Master pump control: %b, "
+            + "Second central heating circuit present: %b",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.getSlaveMemberId(),
+        this.isSlaveDhwPresent(), this.isSlaveControlType(), this.isSlaveCoolingConfig(),
+        this.isSlaveDhwConfig(), this.isSlaveMasterLowOffPumpControl(), this.isSlaveCh2Present());
+  }
+
 }

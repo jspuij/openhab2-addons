@@ -57,10 +57,10 @@ public abstract class OpenThermFrame {
     this.direction = direction;
     this.dataId = dataId;
 
-    this.messageType = MessageType.getMessageType((frameData[0] >> 1));
+    this.messageType = MessageType.getMessageType((frameData[0] & 0x7F) >> 4);
     if (this.messageType == null) {
       throw new IllegalArgumentException(
-          String.format("Incorrect message type: %d", (frameData[0] >> 1)));
+          String.format("Incorrect message type: %d", (frameData[0] & 0x7F) >> 4));
     }
 
   }
@@ -135,5 +135,4 @@ public abstract class OpenThermFrame {
   public final DataId getDataId() {
     return this.dataId;
   }
-
 }

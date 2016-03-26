@@ -40,4 +40,13 @@ public final class MasterInfoFrame extends OpenThermFrame {
   public int getMasterMemberId() {
     return masterMemberId;
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), Master member Id: %d",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(), this.getMasterMemberId());
+  }
 }

@@ -11,6 +11,7 @@ package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.DecimalFormat;
 
 /**
  * Frame carrying a decimal value.
@@ -55,4 +56,12 @@ public final class DecimalFrame extends OpenThermFrame {
     return value;
   }
 
+  @Override
+  public String toString() {
+    return String.format("Direction: %s (%s), Message Type: %d (%s), Data-Id: %d (%s), Value: %s",
+        this.getDirection().getKey(), this.getDirection().getDescription(),
+        this.getMessageType().getKey(), this.getMessageType().getDescription(),
+        this.getDataId().getKey(), this.getDataId().getDescription(),
+        new DecimalFormat("#0.00").format(this.getValue()));
+  }
 }
