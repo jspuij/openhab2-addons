@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.openthermgateway.internal;
+package org.openhab.binding.openthermgateway.internal.communication;
 
 import java.io.IOException;
 import java.net.Socket;

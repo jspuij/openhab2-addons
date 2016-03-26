@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.openthermgateway.internal;
+package org.openhab.binding.openthermgateway.internal.communication;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.openhab.binding.openthermgateway.internal.communication.EventThread;
-import org.openhab.binding.openthermgateway.internal.communication.ReceiveThread;
 import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent;
 import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent.ConnectionState;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEvent;

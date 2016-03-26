@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.openthermgateway.internal;
+package org.openhab.binding.openthermgateway.internal.communication;
 
 /**
  * Communicates with an Opentherm Gateway over a serial connection.

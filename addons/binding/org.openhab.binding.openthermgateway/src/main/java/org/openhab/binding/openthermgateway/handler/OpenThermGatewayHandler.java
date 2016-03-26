@@ -10,20 +10,25 @@ package org.openhab.binding.openthermgateway.handler;
 
 import static org.openhab.binding.openthermgateway.OpenThermGatewayBindingConstants.*;
 
+import java.util.Hashtable;
+
+import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
-import org.openhab.binding.openthermgateway.internal.CommunicationProvider;
-import org.openhab.binding.openthermgateway.internal.NetworkCommunicationProvider;
-import org.openhab.binding.openthermgateway.internal.SerialCommunicationProvider;
+import org.openhab.binding.openthermgateway.discovery.OpenThermDiscoveryService;
+import org.openhab.binding.openthermgateway.internal.communication.CommunicationProvider;
+import org.openhab.binding.openthermgateway.internal.communication.NetworkCommunicationProvider;
+import org.openhab.binding.openthermgateway.internal.communication.SerialCommunicationProvider;
 import org.openhab.binding.openthermgateway.internal.events.ConnectionStateEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEvent;
 import org.openhab.binding.openthermgateway.internal.events.GatewayEventListener;
 import org.openhab.binding.openthermgateway.internal.events.MessageEvent;
 import org.openhab.binding.openthermgateway.internal.protocol.opentherm.OpenThermFrame;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +50,16 @@ public final class OpenThermGatewayHandler extends BaseBridgeHandler
    * Communication provider for the Opentherm Gateway.
    */
   private CommunicationProvider communicationProvider;
+
+  /**
+   * Discovery service.
+   */
+  private OpenThermDiscoveryService discoveryService;
+
+  /**
+   * Discovery service registration.
+   */
+  private ServiceRegistration discoveryServiceRegistration;
 
   /**
    * Creates a new instance of this class for the {@link Bridge}.
@@ -88,6 +103,10 @@ public final class OpenThermGatewayHandler extends BaseBridgeHandler
       return;
     }
 
+    this.discoveryService = new OpenThermDiscoveryService(this);
+    this.discoveryServiceRegistration = this.bundleContext.registerService(DiscoveryService.class,
+        this.discoveryService, new Hashtable<String, Object>());
+
     this.communicationProvider.addEventListener(this);
     this.communicationProvider.start(port);
     this.logger.trace("initialize() exit.");
@@ -103,6 +122,11 @@ public final class OpenThermGatewayHandler extends BaseBridgeHandler
       this.communicationProvider.stop();
       this.communicationProvider.removeEventListener(this);
       this.communicationProvider = null;
+    }
+
+    if (this.discoveryService != null) {
+      this.discoveryServiceRegistration.unregister();
+      this.discoveryService = null;
     }
     super.dispose();
     this.logger.trace("dispose() exit.");

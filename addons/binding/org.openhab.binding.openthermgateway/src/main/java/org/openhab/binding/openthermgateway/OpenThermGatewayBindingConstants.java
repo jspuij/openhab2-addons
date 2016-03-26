@@ -37,9 +37,19 @@ public final class OpenThermGatewayBindingConstants {
   public static final String CONFIGURATION_PORT = "port";
 
   /**
-   * List of all Thing Type UIDs.
+   * Gateway thing type.
    */
   public static final ThingTypeUID THING_TYPE_GATEWAY = new ThingTypeUID(BINDING_ID, "gateway");
+
+  /**
+   * Master thing type.
+   */
+  public static final ThingTypeUID THING_TYPE_MASTER = new ThingTypeUID(BINDING_ID, "master");
+
+  /**
+   * Slave thing type.
+   */
+  public static final ThingTypeUID THING_TYPE_SLAVE = new ThingTypeUID(BINDING_ID, "slave");
 
   /**
    * Gateway version.
