@@ -12,6 +12,7 @@ import static org.openhab.binding.openthermgateway.OpenThermGatewayBindingConsta
 import java.util.Collections;
 import java.util.Set;
 
+import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
@@ -49,7 +50,7 @@ public final class OpenThermGatewayHandlerFactory extends BaseThingHandlerFactor
     ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
     if (thingTypeUID.equals(THING_TYPE_GATEWAY)) {
-      return new OpenThermGatewayHandler(thing);
+      return new OpenThermGatewayHandler((Bridge) thing);
     }
 
     return null;

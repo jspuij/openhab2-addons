@@ -10,11 +10,11 @@ package org.openhab.binding.openthermgateway.handler;
 
 import static org.openhab.binding.openthermgateway.OpenThermGatewayBindingConstants.*;
 
+import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
+import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.openthermgateway.internal.CommunicationProvider;
 import org.openhab.binding.openthermgateway.internal.NetworkCommunicationProvider;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jan-Willem Spuij - Initial contribution
  */
-public final class OpenThermGatewayHandler extends BaseThingHandler
+public final class OpenThermGatewayHandler extends BaseBridgeHandler
     implements GatewayEventListener {
 
   /**
@@ -47,13 +47,13 @@ public final class OpenThermGatewayHandler extends BaseThingHandler
   private CommunicationProvider communicationProvider;
 
   /**
-   * Creates a new instance of this class for the {@link Thing}.
+   * Creates a new instance of this class for the {@link Bridge}.
    *
-   * @param thing
-   *          thing
+   * @param bridge
+   *          the opentherm gateway bridge
    */
-  public OpenThermGatewayHandler(final Thing thing) {
-    super(thing);
+  public OpenThermGatewayHandler(final Bridge bridge) {
+    super(bridge);
   }
 
   @Override
