@@ -24,13 +24,16 @@ public class DoubleUnsignedIntegerFrame extends OpenthermFrame {
   /**
    * Creates a new instance of the {@link DoubleUnsignedIntegerFrame} class.
    *
-   * @param direction The {@link Direction} in which the frame is flowing.
-   * @param message The bytes of the message.
+   * @param direction The {@link Direction} the message flows into.
+   * @param dataId The {@link DataId} of the frame.
+   * @param frameData The frame data.
+   * @throws IllegalArgumentException if the frame data is invalid.
    */
-  public DoubleUnsignedIntegerFrame(final Direction direction, final byte[] message) {
-    super(direction, message);
-    firstValue = message[3] & 0xFF;
-    secondValue = message[4] & 0xFF;
+  public DoubleUnsignedIntegerFrame(final Direction direction, final DataId dataId,
+      final byte[] frameData) {
+    super(direction, dataId, frameData);
+    firstValue = frameData[3] & 0xFF;
+    secondValue = frameData[4] & 0xFF;
   }
 
   /**

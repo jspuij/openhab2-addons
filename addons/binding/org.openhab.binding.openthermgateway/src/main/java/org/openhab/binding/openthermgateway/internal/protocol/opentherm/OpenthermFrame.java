@@ -8,6 +8,8 @@
 
 package org.openhab.binding.openthermgateway.internal.protocol.opentherm;
 
+import java.lang.reflect.Constructor;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
@@ -46,12 +48,14 @@ public abstract class OpenthermFrame {
    * Initializes a new instance of the {@link OpenthermFrame} class.
    *
    * @param direction The {@link Direction} the message flows into.
+   * @param dataId The {@link DataId} of the frame.
    * @param frameData The frame data.
    * @throws IllegalArgumentException if the frame data is invalid.
    */
-  public OpenthermFrame(final Direction direction, final byte[] frameData)
+  public OpenthermFrame(final Direction direction, final DataId dataId, final byte[] frameData)
       throws IllegalArgumentException {
     this.direction = direction;
+    this.dataId = dataId;
 
     this.messageType = MessageType.getMessageType((frameData[0] >> 1));
     if (this.messageType == null) {
@@ -59,10 +63,6 @@ public abstract class OpenthermFrame {
           String.format("Incorrect message type: %d", (frameData[0] >> 1)));
     }
 
-    this.dataId = DataId.getDataId(frameData[1]);
-    if (this.dataId == null) {
-      throw new IllegalArgumentException(String.format("Unknown dataId: %d", (frameData[1])));
-    }
   }
 
   /**
@@ -92,8 +92,21 @@ public abstract class OpenthermFrame {
 
     byte[] frameData = DatatypeConverter.parseHexBinary(frame.substring(1, 2 * FRAME_LENGTH + 1));
 
-    return null;
+    DataId dataId = DataId.getDataId(frameData[1]);
+    if (dataId == null) {
+      throw new IllegalArgumentException(String.format("Unknown dataId: %d", (frameData[1])));
+    }
 
+    try {
+      Constructor<? extends OpenthermFrame> constructor = dataId.getFrameClass()
+          .getConstructor(Direction.class, DataId.class, byte[].class);
+
+      return constructor.newInstance(direction, dataId, frameData);
+    } catch (Exception e) {
+      logger.error("Unable to instantiate frame class.", e);
+    }
+
+    return null;
   }
 
   /**

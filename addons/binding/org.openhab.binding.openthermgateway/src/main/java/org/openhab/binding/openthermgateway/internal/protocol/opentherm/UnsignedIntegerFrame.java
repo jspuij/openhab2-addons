@@ -22,13 +22,15 @@ public class UnsignedIntegerFrame extends OpenthermFrame {
   /**
    * Creates a new instance of the {@link UnsignedIntegerFrame} class.
    *
-   * @param direction The {@link Direction} in which the frame is flowing.
-   * @param message The bytes of the message.
+   * @param direction The {@link Direction} the message flows into.
+   * @param dataId The {@link DataId} of the frame.
+   * @param frameData The frame data.
+   * @throws IllegalArgumentException if the frame data is invalid.
    */
-  public UnsignedIntegerFrame(final Direction direction, final byte[] message) {
-    super(direction, message);
-
-    value = ByteBuffer.wrap(message, 2, 2).order(ByteOrder.BIG_ENDIAN).getShort() & 0xFFFF;
+  public UnsignedIntegerFrame(final Direction direction, final DataId dataId,
+      final byte[] frameData) {
+    super(direction, dataId, frameData);
+    value = ByteBuffer.wrap(frameData, 2, 2).order(ByteOrder.BIG_ENDIAN).getShort() & 0xFFFF;
   }
 
   /**
